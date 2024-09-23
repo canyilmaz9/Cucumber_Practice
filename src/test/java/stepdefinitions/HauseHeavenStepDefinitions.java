@@ -40,7 +40,7 @@ public class HauseHeavenStepDefinitions {
         int totalResult = Integer.parseInt(totalResultinString);
 
         System.out.println("Total number of Result: " + totalResult);
-        //new commit
+        //new commit 2
 
     }
     @Then("Close page")
