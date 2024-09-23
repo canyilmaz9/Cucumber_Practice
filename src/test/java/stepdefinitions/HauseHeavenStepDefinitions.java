@@ -3,10 +3,14 @@ package stepdefinitions;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.interactions.Actions;
 import pages.Listing;
 import pages.WebsiteMain;
 import utilities.ConfigReader;
 import utilities.Driver;
+import utilities.ReusableMethods;
 
 import static utilities.Driver.driver;
 
@@ -21,7 +25,14 @@ public class HauseHeavenStepDefinitions {
     }
     @Then("Click on {string}")
     public void click_on(String string) {
-            websiteMain.listingButton.click();
+        switch (string){
+            case "Listing":
+                websiteMain.listingButton.click();
+                break;
+            case "Sort By":
+                listing.sortByButton.click();
+                break;
+        }
     }
     @Then("Validate Current Title")
     public void validate_current_title() {
@@ -40,8 +51,96 @@ public class HauseHeavenStepDefinitions {
         int totalResult = Integer.parseInt(totalResultinString);
 
         System.out.println("Total number of Result: " + totalResult);
-        //deneme
 
+    }
+
+    @Then("Click on the first property of the page with {string} Button And Validate Current Title After Clicking on View And Validate preise of the property with preise in listing page")
+    public void click_on_the_first_property_of_the_page_with_button_and_validate_current_title_after_clicking_on_view_and_validate_preise_of_the_property_with_preise_in_listing_page(String string) {
+            Actions actions = new Actions(Driver.getDriver());
+            actions.sendKeys(Keys.PAGE_DOWN).perform();
+            ReusableMethods.bekle(1);
+            String expectedTitleOfAProperty = listing.titleOfAProperty.get(0).getText();
+            String expectedPreciseOfAProperty = listing.preiseOfAProperty.get(0).getText();
+
+            listing.viewButton.get(0).click();
+            ReusableMethods.bekle(1);
+
+            actions.sendKeys(Keys.PAGE_DOWN).perform();
+            ReusableMethods.bekle(1);
+            String actualTitleOfAProperty = listing.titleAfterClickingOnView.getText();
+
+            Assertions.assertEquals(expectedTitleOfAProperty, actualTitleOfAProperty);
+
+            String actualPreiseOfAProperty = listing.preiseAfterClickingOnView.getText();
+
+            Assertions.assertEquals(expectedPreciseOfAProperty, actualPreiseOfAProperty);
+        }
+
+    @Then("Fill the form")
+    public void fill_the_form() {
+        Actions actions = new Actions(Driver.getDriver());
+        actions.sendKeys(Keys.PAGE_DOWN).perform();
+        utilities.ReusableMethods.bekle(1);
+
+        //Type: For Sale
+        listing.typeDropDown.click();
+        utilities.ReusableMethods.bekle(1);
+        listing.dropDownYazmaYeri.sendKeys("For Sale");
+        utilities.ReusableMethods.bekle(1);
+        listing.dropDownYazmaYeri.sendKeys(Keys.ENTER);
+
+        utilities.ReusableMethods.bekle(1);
+        //No Min: 500
+        listing.searchBoxMinPriceDropDownMenu.click();
+        listing.dropDownYazmaYeri.sendKeys(("500" + Keys.ENTER));
+
+        //No Max: 1000
+        listing.searchBoxMaxPriceDropDownMenu.click();
+        listing.dropDownYazmaYeri.sendKeys("1000" + Keys.ENTER);
+
+        //Checkbox: Wifi and Swimming Pool
+        utilities.ReusableMethods.bekle(2);
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollBy(0,350)");
+        utilities.ReusableMethods.bekle(1);
+        listing.wifi.click();
+        listing.swimmingpool.click();
+        utilities.ReusableMethods.bekle(1);
+        //Searching by clicking on button
+
+        js.executeScript("arguments[0].scrollIntoView(true);", listing.findNewHomeButton);
+        listing.findNewHomeButton.submit();
+      // actions.sendKeys(Keys.PAGE_DOWN).perform();
+
+      // utilities.ReusableMethods.bekle(1);
+      // actions.sendKeys(Keys.PAGE_DOWN).perform();
+      // utilities.ReusableMethods.bekle(1);
+      // actions.sendKeys(Keys.PAGE_DOWN).perform();
+    }
+    @Then("Validate the Result")
+    public void validate_the_result() {
+        Actions actions = new Actions(Driver.getDriver());
+        utilities.ReusableMethods.bekle(1);
+        actions.sendKeys(Keys.PAGE_DOWN).perform();
+        String expectedResult = "0 Results";
+        String actualResult = listing.numberOfResultHome.getText();
+
+       Assertions.assertEquals(expectedResult, actualResult);
+    }
+    @Then("Choose Name: A-Z")
+    public void choose_name_a_z() {
+        Actions actions = new Actions(Driver.getDriver());
+        listing.sortByButtonInput.sendKeys("Name: A-Z");
+        utilities.ReusableMethods.bekle(1);
+        listing.sortByButtonInput.sendKeys(Keys.ENTER);
+
+        utilities.ReusableMethods.bekle(1);
+        actions.sendKeys(Keys.PAGE_DOWN).perform();
+
+        String expectedTitle = "002SerS";
+        String actualTitle = listing.headOfFirstProperty.getText();
+
+        Assertions.assertEquals(expectedTitle, actualTitle);
     }
     @Then("Close page")
     public void close_page() {
