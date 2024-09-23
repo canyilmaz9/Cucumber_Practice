@@ -41,6 +41,7 @@ public class HauseHeavenStepDefinitions {
 
         System.out.println("Total number of Result: " + totalResult);
         //new commit 3
+        //deneme
 
     }
     @Then("Close page")
