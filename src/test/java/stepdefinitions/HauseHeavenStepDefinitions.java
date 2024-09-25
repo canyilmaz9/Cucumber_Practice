@@ -32,9 +32,18 @@ public class HauseHeavenStepDefinitions {
             case "Sort By":
                 listing.sortByButton.click();
                 break;
+            case "Share":
+                utilities.ReusableMethods.bekle(2);
+                JavascriptExecutor js = (JavascriptExecutor) driver;
+                js.executeScript("window.scrollBy(0,500)");
+                Actions actions = new Actions(Driver.getDriver());
+                actions.sendKeys(Keys.PAGE_DOWN).perform();
+                listing.shareButton.click();
+                utilities.ReusableMethods.bekle(2);
+                break;
         }
     }
-    @Then("Validate Current Title")
+    @Then("Validate Current Title of Listing")
     public void validate_current_title() {
         String expectedCurrentTitle = "Properties";
         String actualCurrentTitle = driver.getTitle();
@@ -51,7 +60,16 @@ public class HauseHeavenStepDefinitions {
         int totalResult = Integer.parseInt(totalResultinString);
 
         System.out.println("Total number of Result: " + totalResult);
+    }
+    @Then("Click on the first property of the page with {string} Button And Validate Current Title After Clicking on View")
+    public void click_on_the_first_property_of_the_page_with_button_and_validate_current_title_after_clicking_on_view(String string) {
+        Actions actions = new Actions(Driver.getDriver());
+        actions.sendKeys(Keys.PAGE_DOWN).perform();
+        ReusableMethods.bekle(1);
+        String expectedTitleOfAProperty = listing.titleOfAProperty.get(0).getText();
+        String expectedPreciseOfAProperty = listing.preiseOfAProperty.get(0).getText();
 
+        listing.viewButton.get(0).click();
     }
 
     @Then("Click on the first property of the page with {string} Button And Validate Current Title After Clicking on View And Validate preise of the property with preise in listing page")
@@ -110,12 +128,6 @@ public class HauseHeavenStepDefinitions {
 
         js.executeScript("arguments[0].scrollIntoView(true);", listing.findNewHomeButton);
         listing.findNewHomeButton.submit();
-      // actions.sendKeys(Keys.PAGE_DOWN).perform();
-
-      // utilities.ReusableMethods.bekle(1);
-      // actions.sendKeys(Keys.PAGE_DOWN).perform();
-      // utilities.ReusableMethods.bekle(1);
-      // actions.sendKeys(Keys.PAGE_DOWN).perform();
     }
     @Then("Validate the Result")
     public void validate_the_result() {
@@ -142,6 +154,16 @@ public class HauseHeavenStepDefinitions {
 
         Assertions.assertEquals(expectedTitle, actualTitle);
     }
+    @Then("Choose {string}")
+    public void choose(String string) {
+       switch(string) {
+           case "Facebook":
+               utilities.ReusableMethods.bekle(1);
+               listing.facebookButton.click();
+               break;
+       }
+    }
+
     @Then("Close page")
     public void close_page() {
         Driver.quitDriver();
